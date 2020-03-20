@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
+import Validation from './Validation/Validation'
+import Char from './Char/Char'
+import Radium, {StyleRoot} from 'radium';
 
 class App extends Component {
   state = {
@@ -45,13 +48,20 @@ class App extends Component {
   }
   render() { 
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
       font: 'inherit',
+      color: 'white',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      ':hover': {
+        backgroundColor:'lightgreen',
+        color: 'black'
+      }
     };
+
     let persons= null;
+
     if (this.state.showPersons){
       persons = (
         <div>
@@ -65,19 +75,70 @@ class App extends Component {
           })}
           </div>
       );
+      style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor:'salmon',
+        color: 'black'
+      };
     }
+
+    let classes = [];
+
+    if (this.state.persons.length <= 1)
+      classes.push('red');
+    if (this.state.persons.length < 1)
+      classes.push('bold');
     return (
+      <StyleRoot>
       <div className="App">
-        <h1>Hi first app</h1>
+        <h1 className= {classes}>Hi first app</h1>
         <button
           style= {style} 
           onClick={this.togglePersonHandler}>Toggle Person</button>
           {persons}
       </div>
+      </StyleRoot>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null,'Hi first app'));
   }
 }
 
-export default App;
+
+// Assignement - Chars
+
+// class App extends Component {
+//   state = {
+//     userinput: ''
+//   }
+//   inputChangeHandler = (event) =>{
+//     this.setState({userinput : event.target.value});
+//   };
+//   deleteCharHandler = (index) => {
+//     const inp = this.state.userinput.split('');
+//     inp.splice(index, 1);
+//     const text = inp.join('');
+//     this.setState({userinput: text});
+//   }
+//   render() {
+//     const charList = this.state.userinput.split('').map((char,index) => {
+//         return <Char 
+//         charTyped={char} 
+//         key={index} 
+//         click={() => this.deleteCharHandler(index)}
+//         />;
+//       });
+//     return (
+//       <div>
+//         <input 
+//           type="text" 
+//           onChange={this.inputChangeHandler} 
+//           value={this.state.userinput}/>
+//           <p>{this.state.userinput}</p>
+//           <Validation inputLength={this.state.userinput.length}/>
+//           {charList}
+//       </div>
+//     )
+//   }
+// }
+export default Radium(App);
  
