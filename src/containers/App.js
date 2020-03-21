@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import './App.css';
-import Person from './Person/Person';
-import Validation from './Validation/Validation'
-import Char from './Char/Char'
-import Radium, {StyleRoot} from 'radium';
+import classes from './App.css';
+import Persons from '../components/Persons/Persons'
+import Cockpit from '../components/Cockpit/Cockpit'
 
 class App extends Component {
+  constructor(props){
+    super(props);
+    console.log('apps.js constructor');
+  }
   state = {
     persons: [
       {id:'eee', name: "Max", age: 28},
@@ -15,6 +17,25 @@ class App extends Component {
     showPersons: false
   }
 
+  static getDerivedStateFromProps(props, state){
+    console.log('apps.js getDerivedStateFromProps');
+    return state;
+  }
+  // componentWillMount(){
+  //   console.log('apps.js componentWillMount');
+  // }
+  shouldComponentUpdate(nextProps, nextState)
+  {
+    console.log('App.js shouldComponentUpdate');
+
+      return true;
+  }
+  componentDidUpdate(){
+      console.log('App.js ComponentdidUpdate')
+  }
+  componentDidMount(){
+    console.log('Apps.js componentDidMount');
+  }
   nameChangeHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => p.id === id)
     const person =  {
@@ -35,9 +56,7 @@ class App extends Component {
   }
   togglePersonHandler = () => {
     const doesShow = this.state.showPersons;
-    console.log(doesShow);
     this.setState({showPersons : !doesShow});
-    console.log('test',this.state.showPersons);
   }
 
   deletePersonHandler = (personIndex) => {
@@ -47,57 +66,28 @@ class App extends Component {
     this.setState({persons: persons})
   }
   render() { 
-    const style = {
-      backgroundColor: 'green',
-      font: 'inherit',
-      color: 'white',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-      ':hover': {
-        backgroundColor:'lightgreen',
-        color: 'black'
-      }
-    };
 
     let persons= null;
 
     if (this.state.showPersons){
       persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return <Person
-              click={() => this.deletePersonHandler(index)} 
-              name={person.name} 
-              age={person.age}
-              key={person.id}
-              changed={(event) => this.nameChangeHandler(event, person.id)} />
-          })}
-          </div>
-      );
-      style.backgroundColor = 'red';
-      style[':hover'] = {
-        backgroundColor:'salmon',
-        color: 'black'
-      };
+          <Persons
+            persons = {this.state.persons}
+            clicked = {this.deletePersonHandler}
+            changed = {this.nameChangeHandler} />
+        );
+        console.log(persons);
     }
-
-    let classes = [];
-
-    if (this.state.persons.length <= 1)
-      classes.push('red');
-    if (this.state.persons.length < 1)
-      classes.push('bold');
     return (
-      <StyleRoot>
-      <div className="App">
-        <h1 className= {classes}>Hi first app</h1>
-        <button
-          style= {style} 
-          onClick={this.togglePersonHandler}>Toggle Person</button>
+      <div className={classes.App}>
+        <Cockpit
+          title= {this.props.appTitle}
+          persons= {this.state.persons}
+          showPersons= {this.state.showPersons}
+          toggled= {this.togglePersonHandler}
+        />
           {persons}
       </div>
-      </StyleRoot>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null,'Hi first app'));
   }
@@ -140,5 +130,5 @@ class App extends Component {
 //     )
 //   }
 // }
-export default Radium(App);
+export default App;
  
